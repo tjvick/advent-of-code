@@ -13,8 +13,7 @@ perms = itertools.permutations(range(5))
 for perm in perms:
     output = 0
     for phase in perm:
-        inputs = [phase, output]
-        output, _, _ = run_intcode(raw_program, inputs)
+        output, _, _ = run_intcode(raw_program, [phase, output])
 
     max_output = max(output, max_output)
 
