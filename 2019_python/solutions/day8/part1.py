@@ -18,6 +18,6 @@ def reduce_fn(acc, layer):
 
 result = reduce(reduce_fn, (layer for layer in a), (np.inf, 0))
 
-print(result)
+print(result[1])
 
 
