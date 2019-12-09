@@ -10,6 +10,6 @@ with open('input.txt', 'r') as f:
 
 dict_program = dict(x for x in enumerate(raw_program))
 print(dict_program)
-output, _, _ = run_intcode(dict_program, [1])
+output, _, _ = run_intcode(dict_program, [2])
 
 print(output)
