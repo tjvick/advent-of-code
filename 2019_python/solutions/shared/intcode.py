@@ -39,7 +39,7 @@ def run_intcode(program, inputs, init_pos=0):
             output = read(program, position(program, mode_1, read_pos + 1, relative_base))
             read_pos += 2
             print('output', output)
-            # return output, program, read_pos
+            return output, program, read_pos
         elif instruction == ADJUST_RELATIVE:
             relative_base += program[position(program, mode_1, read_pos + 1, relative_base)]
             read_pos += 2
@@ -52,7 +52,6 @@ def run_intcode(program, inputs, init_pos=0):
             position3 = position(program, mode_3, read_pos + 3, relative_base)
             program[position3] = value_write_cases[instruction](value1, value2)
             read_pos += 4
-
 
 
 def position(program, mode, ix, relative_base):
@@ -70,5 +69,3 @@ def values(program, read_pos, relative_base, *modes):
 
 def read(program, index):
     return program[index] if index in program else 0
-
-
