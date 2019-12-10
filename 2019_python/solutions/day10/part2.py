@@ -3,10 +3,9 @@ sys.path.append('..')
 from shared.intcode import IntCode
 
 
-def run_program(string_program, input):
-    raw_program = list(map(lambda x: int(x), string_program.split(',')))
-    p = IntCode(raw_program)
-    return p.run_out(input)
+def do_the_thing(content):
+    listified = list(map(lambda x: int(x), content.split(',')))
+    return None
 
 
 def main():
@@ -14,7 +13,7 @@ def main():
         for line in f:
             content = line.strip('\n')
 
-    return run_program(content, 1)[0]
+    return do_the_thing(content)
 
 
 if __name__ == "__main__":

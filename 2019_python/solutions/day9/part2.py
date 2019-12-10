@@ -1,13 +1,12 @@
 import sys
 sys.path.append('..')
-from shared.intcode import run_intcode
+from shared.intcode import IntCode
 
 
-def run_program(string_program, inputs):
+def run_program(string_program, input):
     raw_program = list(map(lambda x: int(x), string_program.split(',')))
-    dict_program = dict(x for x in enumerate(raw_program))
-    output, _, _ = run_intcode(dict_program, inputs)
-    return output
+    p = IntCode(raw_program)
+    return p.run_out(input)
 
 
 def main():
@@ -15,7 +14,7 @@ def main():
         for line in f:
             content = line.strip('\n')
 
-    return run_program(content, [2])
+    return run_program(content, 2)[0]
 
 
 if __name__ == "__main__":
