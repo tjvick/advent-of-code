@@ -11,7 +11,6 @@ def do_the_thing(moon_positions):
         # Calculate Velocities
         combs = combinations(range(4), 2)
         for comb in combs:
-            # print('comb', comb)
             for dim in range(3):
                 xa = moon_positions[comb[0]][dim]
                 xb = moon_positions[comb[1]][dim]
@@ -20,7 +19,6 @@ def do_the_thing(moon_positions):
 
                 moon_velocities[comb[0]][dim] += vxa
                 moon_velocities[comb[1]][dim] += vxb
-                # print('mv', moon_velocities)
 
         # Apply Velocity to calc positions
         moon_positions += moon_velocities

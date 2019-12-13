@@ -4,5 +4,5 @@ from Cython.Build import cythonize
 import numpy
 
 setup(
-    ext_modules=cythonize("./update.pyx", include_path=[numpy.get_include()])
+    ext_modules=cythonize("./update.py", include_path=[numpy.get_include()])
 )
