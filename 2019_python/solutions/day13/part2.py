@@ -13,19 +13,18 @@ def do_the_thing(content):
 
     done = False
     while not done:
-        # -1 left
-        # +1 right
         done = p.run(True)
         # if not done:
         #     print('Still Playing...')
         instructions = p.outputs
 
         n_blocks = 0
-        ix = 0
-        screen = np.full([20, 50], ' ', dtype=object)
-        current_score = -1
+        # screen = np.full([20, 50], ' ', dtype=object)
+
+        current_score = 0
         ball_pos = 0
         paddle_pos = 0
+        ix = 0
         while ix < len(instructions):
             ic = instructions[ix]
             ir = instructions[ix+1]
@@ -40,12 +39,11 @@ def do_the_thing(content):
 
             if ic == -1 and ir == 0:
                 current_score = tile_id
-            else:
-                screen[ir, ic] = paint(tile_id)
+            # else:
+                # screen[ir, ic] = paint(tile_id)
 
         # draw(screen)
-        # print(n_blocks)
-        print(current_score)
+        # print(current_score)
 
         if not done:
             joystick_command = 0
@@ -55,23 +53,25 @@ def do_the_thing(content):
                 joystick_command = -1
             p.inputs.append(joystick_command)
 
-
-def paint(tile_id):
-    if tile_id == 0:
-        return " "
-    elif tile_id == 1:
-        return "|"
-    elif tile_id == 2:
-        return "#"
-    elif tile_id == 3:
-        return '-'
-    elif tile_id == 4:
-        return "o"
+    return current_score
 
 
-def draw(screen):
-    for ir in range(screen.shape[0]):
-        print(''.join(screen[ir]))
+# def paint(tile_id):
+#     if tile_id == 0:
+#         return " "
+#     elif tile_id == 1:
+#         return "|"
+#     elif tile_id == 2:
+#         return "#"
+#     elif tile_id == 3:
+#         return '-'
+#     elif tile_id == 4:
+#         return "o"
+
+
+# def draw(screen):
+#     for ir in range(screen.shape[0]):
+#         print(''.join(screen[ir]))
 
 
 def main():

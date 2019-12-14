@@ -9,20 +9,18 @@ def do_the_thing(content):
     p = IntCode(raw_program)
 
     p.inputs = []
-    done = p.run()
+    _ = p.run()
     instructions = p.outputs
 
     n_blocks = 0
     ix = 0
     while ix < len(instructions):
-        instructions[ix]
-        instructions[ix+1]
-        tile_id = instructions[ix+2]
+        tile_id = instructions[ix + 2]
         if tile_id == 2:
             n_blocks += 1
         ix += 3
 
-    print(n_blocks)
+    return n_blocks
 
 
 def main():
