@@ -25,8 +25,8 @@ def n_ore_required(conversions, max_distance, n_fuel):
 
 def create_fuel(conversions, max_distance, n_ore):
     x = n_ore_required(conversions, max_distance, 1)
-    ub = math.ceil(2 * n_ore / x)
-    lb = math.floor(ub / 2)
+    lb = math.floor(n_ore / x)
+    ub = lb * 2
     cp = math.floor((ub + lb) / 2)
     while cp not in [lb, ub]:
         print(lb, ub)
