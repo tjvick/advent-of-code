@@ -1,46 +1,24 @@
 import numpy as np
-import math
 
 
-def get_scalar_pattern(ix_element):
-    base_pattern = (0, 1, 0, -1)
-    new_pattern = [item for scalar in base_pattern for item in (scalar, )*(ix_element+1)]
-    return list(new_pattern[1:]) + [new_pattern[0]]
+def run_fft_once(input_elements):
+    input_elements_flipped = np.flip(input_elements)
+    output_elements_flipped = np.cumsum(input_elements_flipped) % 10
+    return np.flip(output_elements_flipped)
 
 
-def run_fft_once(input_elements, scalar_patterns):
-    output_elements = input_elements[:]
-    for ix, _ in enumerate(input_elements):
-        scalar_pattern = scalar_patterns[ix]
-        scalar_array = [scalar_pattern[iy % len(scalar_pattern)] for iy in range(len(input_elements))]
+def run_fft(input_signal, n_steps, n_repeats=1):
+    signal_index = int(input_signal[0:7])
 
-        # m = []
-        # for ip, p in enumerate(scalar_pattern):
-        #     if p == 1:
-        #         ps = sum(input_elements[ip::len(scalar_pattern)])
-        #         m.append(ps)
-        #     elif p == -1:
-        #         ns = sum(input_elements[ip::len(scalar_pattern)])
-        #         m.append(-ns)
+    input_signal_repeated = input_signal*n_repeats
+    input_signal_chopped = input_signal_repeated[signal_index:]
 
-
-        m = np.multiply(input_elements, scalar_array)
-        s = sum(m)
-        ones_digit = int(str(s)[-1])
-        output_elements[ix] = ones_digit
-
-    return output_elements
-
-
-def run_fft(input_signal, n_steps):
-    input_elements = list(map(lambda x: int(x), input_signal))
-    scalar_patterns = [get_scalar_pattern(ix) for ix in range(len(input_elements))]
+    input_elements = np.array(list(map(lambda x: int(x), input_signal_chopped)))
     for ix_step in range(n_steps):
         print('ix_step', ix_step)
-        output_elements = run_fft_once(input_elements, scalar_patterns)
-        input_elements = output_elements
+        input_elements = run_fft_once(input_elements)
 
-    return ''.join(map(lambda x: str(x), output_elements))
+    return ''.join(map(lambda x: str(x), input_elements[0:8]))
 
 
 def main():
@@ -48,7 +26,7 @@ def main():
         for line in f:
             input_signal = line.strip('\n')
 
-    return run_fft(input_signal, 50)
+    return run_fft(input_signal, 100, 10000)
 
 
 if __name__ == "__main__":

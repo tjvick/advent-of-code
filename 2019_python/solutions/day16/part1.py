@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 
 def get_scalar_pattern(ix_element):
@@ -16,7 +15,7 @@ def run_fft_once(input_elements):
 
         m = np.multiply(input_elements, scalar_array)
         s = sum(m)
-        ones_digit = int(str(s)[-1])
+        ones_digit = abs(sum(m)) % 10
         output_elements[ix] = ones_digit
 
     return output_elements
@@ -26,10 +25,9 @@ def run_fft(input_signal, n_steps):
     input_elements = list(map(lambda x: int(x), input_signal))
     for ix_step in range(n_steps):
         print('ix_step', ix_step)
-        output_elements = run_fft_once(input_elements)
-        input_elements = output_elements
+        input_elements = run_fft_once(input_elements)
 
-    return ''.join(map(lambda x: str(x), output_elements))
+    return ''.join(map(lambda x: str(x), input_elements))
 
 
 def main():
