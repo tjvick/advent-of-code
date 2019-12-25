@@ -12,6 +12,7 @@ pandas = "^0.25.3"
 pytest = "^5.3"
 xxhash = "^1.4"
 cython = "^0.29.14"
+networkx = "^2.4"
 
 [tool.poetry.dev-dependencies]
 
