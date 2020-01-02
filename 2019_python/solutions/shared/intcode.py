@@ -25,7 +25,7 @@ class IntCode:
         self.relative_base = 0
 
     def run_io(self, x):
-        x = x if type(x) == 'list' else [x]
+        x = x if isinstance(x, list) else [x]
         self.inputs = self.inputs + x
         done = self.run(True)
         return self.outputs.pop(0), done
