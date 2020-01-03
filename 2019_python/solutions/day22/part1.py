@@ -1,5 +1,6 @@
 import re
 
+
 def deal_into_new_stack(starting_deck):
     return starting_deck[::-1]
 
