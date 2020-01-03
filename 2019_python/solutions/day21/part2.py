@@ -11,40 +11,48 @@ def render(x):
         return x[-1]
 
 
-def do_the_thing(content):
+def apply_rules(pattern):
+    for ix in range(8):
+        t, j = [False, False]
+        a, b, c, d, e, f, g, h, i = [bool(x) for x in pattern[ix + 1:ix + 10]]
+        t = not t
+        t = a and t
+        t = b and t
+        t = c and t
+        t = not t
+        t = d and t
+        j = e or j
+        j = h or j
+        j = t and j
+        if j:
+            return ix
+
+
+def program_springbot(content):
     raw_program = list(map(lambda x: int(x), content.split(',')))
 
     p = IntCode(raw_program)
-    done = p.run(True)
-    print('done?', done)
-    render(p.outputs)
+    p.run(True)
 
-    instructions = [  # 00
-        "NOT T T",  # 10
-        "AND A T",  # 00
-        "AND B T",  # 00
-        "AND C T",  # 00
-        "NOT T J",  # 01
-        "AND D J",  # 01
-        # second half
-        "NOT J T",  # 11
-        "NOT T T",  # 01
-        "AND E T",  # 11
-        "AND F T",  # 01
-        "AND G T",  # 01
-        "NOT T T",  # 11
-        "AND H T",  # 01
-        "OR T J",   # 01
-        "AND D J",
+    instructions = [
+        "NOT T T",
+        "AND A T",
+        "AND B T",
+        "AND C T",
+        "NOT T T",
+        "AND D T",
+        "OR E J",
+        "OR H J",
+        "AND T J",
         "RUN"
     ]
+
     instructions_encoded = []
     for instruction in instructions:
         instructions_encoded += [ord(c) for c in instruction+"\n"]
 
     p.inputs = instructions_encoded
-    done = p.run(True)
-    print('done?', done)
+    p.run(True)
     return render(p.outputs)
 
 
@@ -53,7 +61,7 @@ def main():
         for line in f:
             content = line.strip('\n')
 
-    return do_the_thing(content)
+    return program_springbot(content)
 
 
 if __name__ == "__main__":

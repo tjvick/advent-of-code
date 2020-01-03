@@ -11,7 +11,7 @@ def render(x):
         return x[-1]
 
 
-def do_the_thing(content):
+def program_springbot(content):
     raw_program = list(map(lambda x: int(x), content.split(',')))
 
     p = IntCode(raw_program)
@@ -43,7 +43,7 @@ def main():
         for line in f:
             content = line.strip('\n')
 
-    return do_the_thing(content)
+    return program_springbot(content)
 
 
 if __name__ == "__main__":
