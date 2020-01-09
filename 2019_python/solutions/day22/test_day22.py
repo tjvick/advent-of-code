@@ -1,5 +1,4 @@
 import part1
-import part2
 
 
 class TestDay22:
@@ -55,42 +54,3 @@ class TestDay22:
 
         new_deck = part1.shuffle(instructions, 10)
         assert " ".join([str(x) for x in new_deck]) == "9 2 5 8 1 4 7 0 3 6"
-
-    def test_position_after_deal_into_new_stack(self):
-        deck_size = 6
-        assert part2.position_before_deal_into_new_stack(deck_size, 5) == 0
-        assert part2.position_before_deal_into_new_stack(deck_size, 1) == 4
-
-    def test_position_before_negative_cut(self):
-        deck_size = 10
-        assert part2.position_before_cut(deck_size, -3, 6) == 3
-        assert part2.position_before_cut(deck_size, -3, 1) == 8
-
-    def test_position_before_positive_cut(self):
-        deck_size = 10
-        assert part2.position_before_cut(deck_size, 4, 6) == 0
-        assert part2.position_before_cut(deck_size, 4, 1) == 5
-
-    def test_position_after_deal_increment(self):
-        deck_size = 10
-        assert part2.position_before_deal_increment(deck_size, 3, 6) == 2
-        assert part2.position_before_deal_increment(deck_size, 7, 5) == 5
-        assert part2.position_before_deal_increment(deck_size, 7, 9) == 7
-        assert part2.position_before_deal_increment(deck_size, 7, 8) == 4
-
-    def test_position_before_shuffle(self):
-        instructions = [
-            "deal into new stack",
-            "cut -2",
-            "deal with increment 7",
-            "cut 8",
-            "cut -4",
-            "deal with increment 7",
-            "cut 3",
-            "deal with increment 9",
-            "deal with increment 3",
-            "cut -1",
-        ]
-        # "9 2 5 8 1 4 7 0 3 6"
-        original_position = part2.position_before_shuffle(instructions, 10, 5)
-        assert original_position == 4

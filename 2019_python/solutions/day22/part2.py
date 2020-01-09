@@ -1,50 +1,45 @@
 import re
 
 
-def pickup_increment(starting_deck, increment):
-    new_deck = []
-    ix = 0
-    while len(new_deck) < len(starting_deck):
-        new_deck.append(starting_deck[ix])
-        ix = (ix + increment) % len(starting_deck)
-
-    return new_deck
-
-
-def position_before_deal_increment(deck_size, increment, starting_position):
-    ix = 0
-    while True:
-        if (increment*ix) % deck_size == starting_position:
-            return ix
-        ix += 1
-
-
-def position_before_cut(deck_size, n_cards, starting_position):
-    return (starting_position + n_cards) % deck_size
-
-
-def position_before_deal_into_new_stack(deck_size, starting_position):
-    return deck_size - starting_position - 1
-
-
-def position_before_shuffle(instructions, deck_size, ix):
+def compute_linear_coeffecients_for_shuffle(instructions, deck_size):
+    a = 1
+    b = 0
     for line in instructions[::-1]:
         m_increment = re.match(r"deal with increment (\d+)", line)
         if m_increment:
             increment = int(m_increment.group(1))
-            ix = position_before_deal_increment(deck_size, increment, ix)
+            mod_inv = pow(increment, deck_size-2, deck_size)
+            a = (a * mod_inv) % deck_size
+            b = (b * mod_inv) % deck_size
             continue
 
         m_deal = re.match(r"deal into new stack", line)
         if m_deal:
-            ix = position_before_deal_into_new_stack(deck_size, ix)
+            a = -a
+            b = deck_size - b - 1
             continue
 
         m_cut = re.match(r"cut (-?\d+)", line)
         if m_cut:
-            ix = position_before_cut(deck_size, int(m_cut.group(1)), ix)
+            increment = int(m_cut.group(1))
+            a = a
+            b = (b + increment) % deck_size
 
-    return ix
+    return a, b
+
+
+def raise_polynomial_to_power(a, b, power, mod_limit):
+    a = a % mod_limit
+    b = b % mod_limit
+    if power == 0:
+        return 1, 0
+    elif power % 2 == 0:
+        return raise_polynomial_to_power(a**2, (a*b + b), power/2, mod_limit)
+    elif power % 3 == 0:
+        return raise_polynomial_to_power(a**3, a**2*b + a*b + b, power/3, mod_limit)
+    else:
+        c, d = raise_polynomial_to_power(a, b, power-1, mod_limit)
+        return (a*c) % mod_limit, (a*d + b) % mod_limit
 
 
 def main():
@@ -52,7 +47,13 @@ def main():
         content = [line.strip('\n') for line in f]
 
     deck_size = 119315717514047
-    return position_before_shuffle(content, deck_size, 2020)
+    repeats = 101741582076661
+    ending_position = 2020
+
+    a, b = compute_linear_coeffecients_for_shuffle(content, deck_size)
+    c, d = raise_polynomial_to_power(a, b, repeats, deck_size)
+
+    return (c * ending_position + d) % deck_size
 
 
 if __name__ == "__main__":
