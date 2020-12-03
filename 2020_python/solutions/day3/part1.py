@@ -1,4 +1,3 @@
-row = 0
 column = 0
 n_trees = 0
 with open('input.txt', 'r') as f:
@@ -8,6 +7,5 @@ with open('input.txt', 'r') as f:
         if content[column] == '#':
             n_trees += 1
 
-        row += 1
         column = (column + 3) % len(content)
 

@@ -1,29 +1,26 @@
-def do_it(row_step, col_step):
-    row = 0
-    column = 0
+with open('input.txt', 'r') as f:
+    file_contents = [line.strip('\n') for line in f]
+
+n_lines = len(file_contents)
+line_width = len(file_contents[0])
+
+
+def count_trees(right_step, down_step):
     n_trees = 0
-    counter = 0
+    column_counter = 0
+    row_counter = 0
+    while row_counter < n_lines:
+        char = file_contents[row_counter][column_counter]
 
-    with open('input.txt', 'r') as f:
-        for line in f:
-            content = line.strip('\n')
-            if counter != row:
-                counter += 1
-                continue
+        if char == '#':
+            n_trees += 1
 
-            if content[column] == '#':
-                n_trees += 1
-
-            row = (row + row_step)
-            column = (column + col_step) % len(content)
-            counter += 1
+        row_counter += down_step
+        column_counter = (column_counter + right_step) % line_width
 
     return n_trees
 
-print(do_it(1, 1))
-print(do_it(1, 3))
-print(do_it(1, 5))
-print(do_it(1, 7))
-print(do_it(2, 1))
-print(do_it(1, 1)*do_it(1, 3)*do_it(1, 5)*do_it(1, 7)*do_it(2, 1))
+
+product = count_trees(1, 1)*count_trees(3, 1)*count_trees(5, 1)*count_trees(7, 1)*count_trees(1, 2)
+print(product)
 
