@@ -1,3 +1,2 @@
 with open('input.txt', 'r') as f:
-    for line in f:
-        content = line.strip('\n')
+    file_contents = [line.strip('\n') for line in f]
