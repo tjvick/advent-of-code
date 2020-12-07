@@ -3,8 +3,8 @@ import time
 from datetime import datetime
 import math
 
-with open('115313.json') as f:
-# with open('405974.json') as f:
+# with open('115313.json') as f:
+with open('405974.json') as f:
     data = json.load(f)
 
 star_info = {}
