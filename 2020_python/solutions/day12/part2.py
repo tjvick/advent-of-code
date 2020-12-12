@@ -4,12 +4,6 @@ import numpy as np
 with open('input', 'r') as f:
     file_contents = [line.strip('\n') for line in f]
 
-directions = {
-    'E': 0,
-    'N': 90,
-    'W': 180,
-    'S': 270
-}
 
 rotation_direction = {
     'R': -1,
@@ -20,16 +14,20 @@ unit_velocities = {
     0: [1, 0],
     90: [0, 1],
     180: [-1, 0],
-    270: [0, -1]
+    270: [0, -1],
+    'E': [1, 0],
+    'N': [0, 1],
+    'W': [-1, 0],
+    'S': [0, -1]
 }
 
+M = np.array([[0, -1], [1, 0]])
 
-def rotate(pos, angle):
-    M = np.array([
-        [np.cos(angle), -np.sin(angle)],
-        [np.sin(angle), np.cos(angle)]]
-    ).astype(int)
-    return np.dot(M, np.transpose(pos))
+
+def rotate90(vector, k):
+    for ix in range(int(k % 4)):
+        vector = np.dot(M, vector)
+    return vector
 
 
 pos = np.array([0, 0])
@@ -44,9 +42,10 @@ for movement in file_contents:
         pos += wp_pos * number
 
     if letter in 'NSEW':
-        wp_pos += np.array(unit_velocities[directions[letter]]) * number
+        wp_pos += np.array(unit_velocities[letter]) * number
 
     if letter in 'RL':
-        wp_pos = rotate(wp_pos, rotation_direction[letter] * np.deg2rad(number))
+        angle = rotation_direction[letter] * number
+        wp_pos = rotate90(wp_pos, angle / 90)
 
-print(abs(pos[0]) + abs(pos[1]))
+print(sum(abs(pos)))
