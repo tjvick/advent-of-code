@@ -12,7 +12,7 @@ print(buses)
 print(departure % buses)
 x = buses - departure % buses
 
-print(x[np.argmin(x)])
+print(x)
 print(buses[np.argmin(x)])
 print(x[np.argmin(x)] * buses[np.argmin(x)])
 
