@@ -1,0 +1,1 @@
+print(list(range(-6,6)))
