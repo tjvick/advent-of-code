@@ -3,183 +3,156 @@ import math
 import re
 from collections import Counter
 
-with open('input', 'r') as f:
-    file_contents = [line.strip('\n') for line in f]
+def load_tiles():
+    with open('input', 'r') as f:
+        file_contents = [line.strip('\n') for line in f]
 
-tiles = {}
-for row in file_contents:
-    if 'Tile' in row:
-        m = re.match(r'^Tile (\d+):$', row)
-        tile_id = int(m.group(1))
-        tile_contents = []
-    elif '.' in row:
-        tile_contents.append(row.replace('#', '1').replace('.', '0'))
-    else:
-        mat = []
-        for r in tile_contents:
-            mat.append([int(x) for x in r])
-        tiles[tile_id] = np.array(mat)
+    tiles = {}
+    tile_id = -1
+    tile_contents = []
+    for row in file_contents:
+        if 'Tile' in row:
+            m = re.match(r'^Tile (\d+):$', row)
+            tile_id = int(m.group(1))
+            tile_contents = []
+        elif '.' in row:
+            tile_contents.append(row.replace('#', '1').replace('.', '0'))
+        else:
+            tile_content_matrix = [[int(x) for x in r] for r in tile_contents]
+            tiles[tile_id] = np.array(tile_content_matrix)
 
-mat = []
-for r in tile_contents:
-    mat.append([int(x) for x in r])
-tiles[tile_id] = np.array(mat)
+    tile_content_matrix = [[int(x) for x in r] for r in tile_contents]
+    tiles[tile_id] = np.array(tile_content_matrix)
 
-# print(tiles)
+    return tiles
+
+
+def load_monster():
+    with open('sea_monster', 'r') as f:
+        monster_contents = [line.strip('\n') for line in f]
+
+    monster = []
+    for row in monster_contents:
+        monster.append([int(x) for x in row.replace('#', '1').replace('.', '0').replace(' ', '0')])
+
+    return np.array(monster)
+
 
 def stringify(x):
     return ''.join([str(v) for v in list(x)])
 
 
+def cycle(tile):
+    t = tile
+    for n_flips in range(2):
+        for n_rotates in range(4):
+            yield t
+            t = np.rot90(t)
+        t = np.fliplr(t)
+
+
+tiles = load_tiles()
+n_tile_per_side = int(math.sqrt(len(tiles)))
+
 tile_top_rows = {}
 all_top_rows = []
-for id, tile in tiles.items():
+for tile_id, tile in tiles.items():
     top_rows = []
-    t = tile
-    top_rows.append(t[0][:])
-    for ix in range(3):
-        t = np.rot90(t)
-        top_rows.append(t[0][:])
-    t = np.fliplr(tile)
-    top_rows.append(t[0][:])
-    for ix in range(3):
-        t = np.rot90(t)
-        top_rows.append(t[0][:])
+    for t in cycle(tile):
+        top_rows.append(t[0, :])
 
-    tile_top_rows[id] = [stringify(x) for x in top_rows]
-    all_top_rows += [stringify(x) for x in top_rows]
+    tile_top_rows[tile_id] = [stringify(top_row) for top_row in top_rows]
+    all_top_rows += [stringify(top_row) for top_row in top_rows]
 
 
-print(tile_top_rows)
-
-c = dict(Counter(all_top_rows))
-print(c)
-
-corner_tiles = []
-for id, top_rows in tile_top_rows.items():
-    n_duplicates = 0
-    for row in top_rows:
-        if c[row] > 1:
-            n_duplicates += 1
-
-    if n_duplicates == 4:
-        corner_tiles.append(id)
-
-print(corner_tiles)
+top_row_occurrences = dict(Counter(all_top_rows))
 
 
 def get_tile_below(current_tile_id):
     bottom_row = stringify(tiles[current_tile_id][-1, :])
-    if c[bottom_row] == 1:
+    if top_row_occurrences[bottom_row] == 1:
         return -1
 
-    if c[bottom_row] > 1:
-        for id, top_rows in tile_top_rows.items():
-            if bottom_row in top_rows and id != current_tile_id:
-                next_tile_id = id
+    if top_row_occurrences[bottom_row] > 1:
+        for tile_id, top_rows in tile_top_rows.items():
+            if bottom_row in top_rows and tile_id != current_tile_id:
+                next_tile_id = tile_id
 
-    idx = tile_top_rows[next_tile_id].index(bottom_row)
-    next_tile_top_row = stringify(tiles[next_tile_id][0, :])
-    if idx >= 4:
-        tiles[next_tile_id] = np.fliplr(tiles[next_tile_id])
-
-    while next_tile_top_row != bottom_row:
-        tiles[next_tile_id] = np.rot90(tiles[next_tile_id])
-        next_tile_top_row = stringify(tiles[next_tile_id][0, :])
+    for t in cycle(tiles[next_tile_id]):
+        if stringify(t[0, :]) == bottom_row:
+            tiles[next_tile_id] = t
+            break
 
     return next_tile_id
 
 
-def get_tile_right_of(current_tile_id):
-    print(current_tile_id)
+def get_tile_on_right(current_tile_id):
     right_col = stringify(tiles[current_tile_id][:, -1])
-    if c[right_col] == 1:
+    if top_row_occurrences[right_col] == 1:
         return -1
 
-    if c[right_col] > 1:
-        for id, top_rows in tile_top_rows.items():
-            if right_col in top_rows and id != current_tile_id:
-                next_tile_id = id
+    if top_row_occurrences[right_col] > 1:
+        for tile_id, top_rows in tile_top_rows.items():
+            if right_col in top_rows and tile_id != current_tile_id:
+                next_tile_id = tile_id
 
-    idx = tile_top_rows[next_tile_id].index(right_col)
-    next_tile_left_col = stringify(tiles[next_tile_id][:, 0])
-    if idx < 4:
-        tiles[next_tile_id] = np.fliplr(tiles[next_tile_id])
-
-    while next_tile_left_col != right_col:
-        tiles[next_tile_id] = np.rot90(tiles[next_tile_id])
-        next_tile_left_col = stringify(tiles[next_tile_id][:, 0])
+    for t in cycle(tiles[next_tile_id]):
+        if stringify(t[:, 0]) == right_col:
+            tiles[next_tile_id] = t
+            break
 
     return next_tile_id
 
 
+def build_tile_grid():
+    # get corner tiles
+    corner_tiles = []
+    for tile_id, top_rows in tile_top_rows.items():
+        n_row_duplicates = sum([top_row_occurrences[row] > 1 for row in top_rows])
+        if n_row_duplicates == 4:
+            corner_tiles.append(tile_id)
 
-n_per_side = int(math.sqrt(len(tiles)))
-tile_id_grid = np.zeros((n_per_side, n_per_side), dtype=int)
-col_idx = 0
-row_idx = 0
-
-
-# Rotate and flip first corner into place
-current_tile_id = corner_tiles[0]
-bottom_row = stringify(tiles[current_tile_id][-1, :])
-while c[bottom_row] == 1:
-    tiles[current_tile_id] = np.rot90(tiles[current_tile_id])
-    bottom_row = stringify(tiles[current_tile_id][-1, :])
-
-right_col = stringify(tiles[current_tile_id][:, -1])
-while c[right_col] == 1:
-    tiles[current_tile_id] = np.fliplr(tiles[current_tile_id])
-    right_col = stringify(tiles[current_tile_id][:, -1])
-
-# Build tile grid
-while current_tile_id > -1:
-    while current_tile_id > -1:
-        tile_id_grid[row_idx, col_idx] = current_tile_id
-        current_tile_id = get_tile_below(current_tile_id)
-        row_idx += 1
-
-    current_tile_id = get_tile_right_of(tile_id_grid[0, col_idx])
-
-    row_idx = 0
-    col_idx += 1
-
-print(tile_id_grid)
+    # Rotate and flip first corner into place
+    for t in cycle(tiles[corner_tiles[0]]):
+        bottom_row = stringify(t[-1, :])
+        right_col = stringify(t[:, -1])
+        if top_row_occurrences[bottom_row] > 1 and top_row_occurrences[right_col] > 1:
+            tiles[corner_tiles[0]] = t
+            break
 
 
-def build_photo(tile_id_grid):
-    shrunken_tiles = {}
-    for id, tile in tiles.items():
-        shrunken_tiles[id] = tile[1:-1, 1:-1]
-
-    n_pixels = shrunken_tiles[id].shape[0]
-    photo = np.zeros((shrunken_tiles[id].shape[0]*n_per_side, shrunken_tiles[id].shape[1]*n_per_side))
-
-    row_idx = 0
+    tile_id_grid = np.zeros((n_tile_per_side, n_tile_per_side), dtype=int)
     col_idx = 0
-    while col_idx < n_per_side:
-        while row_idx < n_per_side:
-            photo[row_idx*n_pixels:(row_idx+1)*n_pixels, col_idx*n_pixels:(col_idx+1)*n_pixels] = shrunken_tiles[tile_id_grid[row_idx, col_idx]]
+    row_idx = 0
+
+    current_tile_id = corner_tiles[0]
+    while current_tile_id > -1:
+        while current_tile_id > -1:
+            tile_id_grid[row_idx, col_idx] = current_tile_id
+            current_tile_id = get_tile_below(current_tile_id)
             row_idx += 1
+
+        current_tile_id = get_tile_on_right(tile_id_grid[0, col_idx])
 
         row_idx = 0
         col_idx += 1
 
+    return tile_id_grid
+
+
+def build_photo(tile_id_grid):
+    trimmed_tiles = {}
+    for tile_id, tile in tiles.items():
+        trimmed_tiles[tile_id] = tile[1:-1, 1:-1]
+
+    tile_size = trimmed_tiles[tile_id].shape[0]
+    photo = np.zeros((tile_size * n_tile_per_side, tile_size * n_tile_per_side))
+    for row_idx in range(n_tile_per_side):
+        for col_idx in range(n_tile_per_side):
+            photo[row_idx*tile_size:(row_idx+1)*tile_size, col_idx*tile_size:(col_idx+1)*tile_size] = trimmed_tiles[tile_id_grid[row_idx, col_idx]]
+
     return photo
 
-photo = build_photo(tile_id_grid)
-# print(photo)
-
-with open('sea_monster', 'r') as f:
-    monster_contents = [line.strip('\n') for line in f]
-
-monster = []
-for row in monster_contents:
-    monster.append([int(x) for x in row.replace('#', '1').replace('.', '0').replace(' ', '0')])
-
-monster = np.array(monster)
-
-# print(monster)
 
 def count_monsters(photo, monster):
     monster_shape = monster.shape
@@ -194,22 +167,16 @@ def count_monsters(photo, monster):
             if np.sum(window * monster) == monster_sum:
                 monster_count += 1
 
-    sea = np.sum(photo) - monster_count * monster_sum
-    return monster_count, sea
+    sea_roughness = np.sum(photo) - monster_count * monster_sum
+    return monster_count, sea_roughness
 
 
-monster_count, sea = count_monsters(photo, monster)
-n_flips = 0
-while monster_count == 0 and n_flips <= 2:
-    n_flips += 1
-    photo = np.fliplr(photo)
-    monster_count, sea = count_monsters(photo, monster)
+tile_id_grid = build_tile_grid()
+photo = build_photo(tile_id_grid)
 
-    n_rotations = 0
-    while monster_count == 0 and n_rotations < 4:
-        n_rotations += 1
-        photo = np.rot90(photo)
-        monster_count, sea = count_monsters(photo, monster)
+monster = load_monster()
 
-
-print(count_monsters(photo, monster))
+for p in cycle(photo):
+    monster_count, sea_roughness = count_monsters(p, monster)
+    if monster_count > 0:
+        print(sea_roughness)

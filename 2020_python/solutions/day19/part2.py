@@ -10,31 +10,21 @@ messages = file_contents[break_point+1:]
 rules = {}
 for rule_string in rule_strings:
     m = re.match(r'^(\d+): (.*)$', rule_string)
-    id = m.group(1)
-    subrules = m.group(2).split(" | ")
-    rules[id] = subrules
-
-# print(rules)
+    rule_id = m.group(1)
+    subrules = m.group(2).strip('"').split(" | ")
+    rules[rule_id] = subrules
 
 
 def matches_subrule(subrule, message):
-    # print('message', message)
-    if subrule == '"a"':
-        if message[0] == 'a':
-            return True, message[1:]
-        else:
-            return False, message
-
-    if subrule == '"b"':
-        if message[0] == 'b':
+    if subrule in 'ab':
+        if message[0] == subrule:
             return True, message[1:]
         else:
             return False, message
 
     remainder = message
-    for ruleref in subrule.split(' '):
-        # print('ruleref', ruleref, "of subrule", subrule)
-        matches, remainder = matches_rule(rules[ruleref], remainder)
+    for rule_id in subrule.split(' '):
+        matches, remainder = matches_rule(rules[rule_id], remainder)
         if not matches:
             return False, message
 
@@ -42,16 +32,11 @@ def matches_subrule(subrule, message):
 
 
 def matches_rule(rule, message):
-    # print('rule', rule)
-    # print('message', message)
     if message == '':
         return False, message
 
     for subrule in rule:
-        # print("subrule", subrule, "of rule", rule)
         matches, remainder = matches_subrule(subrule, message)
-        # print("matches", matches)
-        # print("remainder", remainder)
         if matches:
             return True, remainder
 
@@ -59,7 +44,7 @@ def matches_rule(rule, message):
 
 
 def matches_31s(remainder, n31s):
-    matches_31, remainder_after_31 = matches_rule(rules['31'], remainder)
+    matches_31, remainder_after_31 = matches_subrule('31', remainder)
     if matches_31:
         if remainder_after_31 == '':
             return True, n31s+1
@@ -69,24 +54,23 @@ def matches_31s(remainder, n31s):
         return False, 0
 
 
-def match_the_damn_thing(remainder, n42s):
-    print(remainder)
-    matches_42, remainder_after_42 = matches_rule(rules['42'], remainder)
-    print('matches_42', matches_42)
-    print('remainder_after_42', remainder_after_42)
+def matches_42s_then_31s(remainder, n42s):
+    matches_42, remainder_after_42 = matches_subrule('42', remainder)
     if matches_42:
-        rest_31s, n31s = matches_31s(remainder_after_42, 0)
-        print('n31s:', n31s, 'n42s:', n42s)
-        if rest_31s and n31s <= n42s:
+        ends_in_31s, n31s = matches_31s(remainder_after_42, 0)
+        if ends_in_31s and n31s < n42s + 1:
             return True
         else:
-            return match_the_damn_thing(remainder_after_42, n42s+1)
+            return matches_42s_then_31s(remainder_after_42, n42s + 1)
     else:
         return False
 
 
 def matches_rule_zero(message):
-    return match_the_damn_thing(message, 0)
+    # 0 : 8 11
+    # 8 : 42 ( 42 ( 42 (...) ) )
+    # 11: 42 ( 42 ( 42 (...) 31) 31) 31
+    return matches_42s_then_31s(message, 0)
 
 
 n_matches = 0
@@ -95,6 +79,3 @@ for message in messages:
         n_matches += 1
 
 print(n_matches)
-
-# 337 too high
-# 327 too high
