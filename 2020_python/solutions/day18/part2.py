@@ -38,4 +38,4 @@ print(evaluate('4 * (4 * (4 + 8 + 9 * 7) + 5 + 9 * 6 * (4 + 4 + 8 + 7 * 9 + 3)) 
 
 total = sum([int(evaluate(expression)) for expression in expressions])
 
-print(total)
+print(total == 88534268715686)
