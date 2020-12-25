@@ -13,11 +13,11 @@ print(dpk)
 
 divisor = 20201227
 
+
 def transform_subject_number(subject_number, loop_size):
     value = 1
     for ix in range(loop_size):
-        value *= subject_number
-        value = np.remainder(value, divisor)
+        value = (value * subject_number) % divisor
 
     return value
 
@@ -26,8 +26,7 @@ def find_loop_size(public_key):
     value = 1
     ix = 0
     while value != public_key:
-        value *= 7
-        value = np.remainder(value, divisor)
+        value = (value * 7) % divisor
         ix += 1
 
     return ix
