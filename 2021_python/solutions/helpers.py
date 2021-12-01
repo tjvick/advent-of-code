@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def read_as_int_list(filepath):
     values = []
     with open(filepath, 'r') as f:
@@ -5,6 +8,15 @@ def read_as_int_list(filepath):
             values.append(int(line.strip('\n')))
 
     return values
+
+
+def read_as_numpy_array(filepath):
+    values = []
+    with open(filepath, 'r') as f:
+        for line in f:
+            values.append(float(line.strip('\n')))
+
+    return np.array(values)
 
 
 def read_as_string_list(filepath):
