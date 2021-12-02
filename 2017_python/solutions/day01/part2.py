@@ -1,15 +1,13 @@
 from solutions import helpers
-import numpy as np
 
 filename = 'input'
 
-[values] = helpers.read_as_digit_list(filename)
+[values] = helpers.read_as_digit_lists(filename)
 
 half = int(len(values) / 2)
+total = 0
+for ix, value in enumerate(values):
+    if value == values[(ix+half) % len(values)]:
+        total += value
 
-sequence = np.concatenate((values, values[0:half]))
-
-answer = sum((sequence[half:] == sequence[0:-half]) * sequence[0:-half])
-
-print(answer)
-
+print(total)

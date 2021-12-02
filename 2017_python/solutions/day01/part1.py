@@ -1,14 +1,14 @@
 from solutions import helpers
-import numpy as np
 
 filename = 'input'
 
-[values] = helpers.read_as_digit_list(filename)
+[values] = helpers.read_as_digit_lists(filename)
 
-sequence = np.append(values, values[0])
+total = 0
+for ix, value in enumerate(values):
+    if value == values[(ix+1) % len(values)]:
+        total += value
 
-print(len(values))
-print(len(sequence))
+print(total)
 
-print(sum((sequence[1:] == sequence[0:-1]) * sequence[0:-1]))
 

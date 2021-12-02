@@ -28,19 +28,19 @@ def read_as_string_list(filepath):
     return contents
 
 
-def read_as_charset_list(filepath):
-    character_sets = []
+def read_as_char_lists(filepath):
+    character_lists = []
     with open(filepath, 'r') as f:
         for line in f:
-            character_sets.append(list(line.strip('\n')))
+            character_lists.append(list(line.strip('\n')))
 
-    return character_sets
+    return character_lists
 
 
-def read_as_digit_list(filepath):
-    digit_sets = []
+def read_as_digit_lists(filepath):
+    digit_lists = []
     with open(filepath, 'r') as f:
         for line in f:
-            digit_sets.append(np.array(list(line.strip('\n')), dtype=int))
+            digit_lists.append(np.array(list(line.strip('\n')), dtype=int))
 
-    return digit_sets
+    return digit_lists
