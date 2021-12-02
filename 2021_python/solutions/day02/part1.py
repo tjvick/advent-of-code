@@ -2,20 +2,19 @@ from solutions import helpers
 
 filename = 'input'
 
-strings = helpers.read_each_line_as_string(filename)
+instructions = helpers.read_each_line_as_string(filename)
 
-x = 0
-y = 0
-for instruction in strings:
+(x, y) = (0, 0)
+for instruction in instructions:
     (direction, amt) = instruction.split()
+    amt = int(amt)
     match direction:
         case "forward":
-            x += int(amt)
+            x += amt
         case "down":
-            y += int(amt)
+            y += amt
         case "up":
-            y -= int(amt)
-
+            y -= amt
 
 print(x, y)
 print(x*y)
