@@ -1,16 +1,16 @@
 import numpy as np
 
 
-def read_as_int_list(filepath):
+def read_each_line_as_int(filepath):
     values = []
     with open(filepath, 'r') as f:
         for line in f:
             values.append(int(line.strip('\n')))
 
-    return values
+    return np.array(values)
 
 
-def read_as_numpy_array(filepath):
+def read_each_line_as_float(filepath):
     values = []
     with open(filepath, 'r') as f:
         for line in f:
@@ -19,7 +19,7 @@ def read_as_numpy_array(filepath):
     return np.array(values)
 
 
-def read_as_string_list(filepath):
+def read_each_line_as_string(filepath):
     contents = []
     with open(filepath, 'r') as f:
         for line in f:
@@ -28,10 +28,28 @@ def read_as_string_list(filepath):
     return contents
 
 
-def read_as_charset_list(filepath):
-    character_sets = []
+def read_each_line_as_char_sequence(filepath):
+    character_lists = []
     with open(filepath, 'r') as f:
         for line in f:
-            character_sets.append(list(line.strip('\n')))
+            character_lists.append(list(line.strip('\n')))
 
-    return character_sets
+    return character_lists
+
+
+def read_each_line_as_digit_sequence(filepath):
+    digit_lists = []
+    with open(filepath, 'r') as f:
+        for line in f:
+            digit_lists.append(np.array(list(line.strip('\n')), dtype=int))
+
+    return digit_lists
+
+
+def read_each_line_as_delimited_int_sequence(filepath, delimiter=None):
+    integer_lists = []
+    with open(filepath, 'r') as f:
+        for line in f:
+            integer_lists.append(np.array(line.strip('\n').split(delimiter), dtype=int))
+
+    return integer_lists
