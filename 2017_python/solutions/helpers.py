@@ -44,3 +44,12 @@ def read_as_digit_lists(filepath):
             digit_lists.append(np.array(list(line.strip('\n')), dtype=int))
 
     return digit_lists
+
+
+def read_as_delimited_integer_lists(filepath, delimiter=None):
+    integer_lists = []
+    with open(filepath, 'r') as f:
+        for line in f:
+            integer_lists.append(np.array(line.strip('\n').split(delimiter), dtype=int))
+
+    return integer_lists
