@@ -53,3 +53,7 @@ def read_each_line_as_delimited_int_sequence(filepath, delimiter=None):
             integer_lists.append(np.array(line.strip('\n').split(delimiter), dtype=int))
 
     return integer_lists
+
+
+def bit_sequence_to_int(bit_sequence):
+    return int("".join(map(str, bit_sequence)), 2)

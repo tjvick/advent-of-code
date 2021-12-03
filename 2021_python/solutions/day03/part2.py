@@ -1,57 +1,38 @@
-from solutions import helpers
+from solutions import helpers as h
 import numpy as np
-from statistics import mode
-
+from scipy import stats
 
 filename = 'input'
 
-# strings = helpers.read_each_line_as_string(filename)
-# ints = helpers.read_each_line_as_int(filename)
-# floats = helpers.read_each_line_as_float(filename)
-# char_sequences = helpers.read_each_line_as_char_sequence(filename)
-digit_sequences = helpers.read_each_line_as_digit_sequence(filename)
-# int_sequences = helpers.read_each_line_as_delimited_int_sequence(filename)
+digit_sequences = h.read_each_line_as_digit_sequence(filename)
 
 report = np.array(digit_sequences)
 
-def oxygen_rating(report):
-    remainder = report.copy()
-    for ix in range(0, np.shape(report)[1]):
-        column = remainder[:, ix]
-        most_common = mode(column)
-        if (sum(column == most_common) == len(column) / 2):
-            most_common = 1
-        print(column == most_common)
-        remainder = remainder[column == most_common, :]
-        if np.shape(remainder)[0] == 1:
-            rating_bits = "".join(str(x) for x in remainder[0, :])
-            print(rating_bits)
-            rating = int("".join(str(x) for x in remainder[0, :]), 2)
 
-            print(rating)
-            return rating
+def keep_numbers_matching_mode(filtered_report, ix, anti=False):
+    if len(filtered_report) == 1:
+        return filtered_report
+
+    column = filtered_report[:, ix]
+    [most_common, n_occurrences] = stats.mode(column)
+    if n_occurrences == len(column) / 2:
+        most_common = 1
+    value_to_keep = most_common if not anti else 1 - most_common
+    return keep_numbers_matching_mode(filtered_report[column == value_to_keep], ix + 1, anti)
 
 
-def co2_rating(report):
-    remainder = report.copy()
-    for ix in range(0, np.shape(report)[1]):
-        column = remainder[:, ix]
-        least_common = 1 - mode(column)
-        if (sum(column == least_common) == len(column) / 2):
-            least_common = 0
-        print(column == least_common)
-        remainder = remainder[column == least_common, :]
-        if np.shape(remainder)[0] == 1:
-            rating_bits = "".join(str(x) for x in remainder[0, :])
-            print(rating_bits)
-            rating = int("".join(str(x) for x in remainder[0, :]), 2)
-
-            print(rating)
-            return rating
+def oxygen_generator_rating(filtered_report):
+    rating_bits = keep_numbers_matching_mode(filtered_report, 0)[0]
+    return h.bit_sequence_to_int(rating_bits)
 
 
-oxy = oxygen_rating(report)
-co2 = co2_rating(report)
+def co2_scrubber_rating(filtered_report):
+    rating_bits = keep_numbers_matching_mode(filtered_report, 0, anti=True)[0]
+    return h.bit_sequence_to_int(rating_bits)
+
+
+oxy = oxygen_generator_rating(report)
+co2 = co2_scrubber_rating(report)
 print(oxy, co2, oxy*co2)
 
 
