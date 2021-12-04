@@ -1,11 +1,23 @@
-import json
 import time
 from datetime import datetime
 import math
+import requests
 
-with open('115313.json') as f:
-# with open('405974.json') as f:
-    data = json.load(f)
+owner_id = "115313"
+# owner_id = "405974"
+
+with open('session_id', 'r') as f:
+    session_id = f.read()
+
+response = requests.get(
+    url=f"https://adventofcode.com/2021/leaderboard/private/view/{owner_id}.json",
+    headers={
+        "Cookie": f"session={session_id}"
+    }
+)
+print(response.status_code)
+
+data = response.json()
 
 star_info = {}
 score_info = {}
@@ -29,7 +41,7 @@ for member_id, member_data in data['members'].items():
 
 # Anonymous Paul
 names['673102'] = 'Paul'
-
+names['403635'] = 'Unknown'
 
 longest_name_length = max([len(name) for name in names.values()])
 def print_name(member_id):
@@ -49,7 +61,7 @@ for member_id, score in sorted_score_info.items():
 
 
 print("Times:")
-finish_times_sorted_by_day = dict(sorted(finish_times.items(), key=lambda item: item[0]))
+finish_times_sorted_by_day = dict(sorted(finish_times.items(), key=lambda item: int(item[0])))
 for day, day_data in finish_times_sorted_by_day.items():
     day_data_sorted_by_part = dict(sorted(day_data.items(), key=lambda item: item[0]))
     print(f'  Day {day}:')
