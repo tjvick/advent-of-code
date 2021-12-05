@@ -1,42 +1,31 @@
 from solutions import helpers
-import numpy as np
+from collections import defaultdict
 import re
 
 filename = 'input'
 
 strings = helpers.read_each_line_as_string(filename)
-# ints = helpers.read_each_line_as_int(filename)
-# floats = helpers.read_each_line_as_float(filename)
-# char_sequences = helpers.read_each_line_as_char_sequence(filename)
-# digit_sequences = helpers.read_each_line_as_digit_sequence(filename)
-# int_sequences = helpers.read_each_line_as_delimited_int_sequence(filename)
 
-filled = {}
 
-for string in strings:
-    splits = string.split(' ')
-    [x1, y1] = list(map(int, splits[0].split(',')))
-    [x2, y2] = list(map(int, splits[2].split(',')))
-    print(x1, y1, x2, y2)
+def fill_in_along_line(x1, y1, x2, y2, filled):
+    dx, dy = x2 - x1, y2 - y1
+    length = max(abs(dx), abs(dy))
+    for step in range(0, length + 1, 1):
+        x = x1 + dx * step / length
+        y = y1 + dy * step / length
+        filled[(x, y)] += 1
 
-    if x1 == x2:
-        print('xs')
-        for y in range(min((y1, y2)), max((y1, y2))+1, 1):
-            if (x1, y) not in filled:
-                filled[(x1, y)] = 0
-            filled[(x1, y)] += 1
-    elif y1 == y2:
-        print('ys')
-        for x in range(min((x1, x2)), max((x1, x2))+1, 1):
-            if (x, y1) not in filled:
-                filled[(x, y1)] = 0
-            filled[(x, y1)] += 1
 
-print(filled)
+pattern = re.compile(r'(\d+),(\d+) -> (\d+),(\d+)')
 
-count = 0
-for key, value in filled.items():
-    if value >= 2:
-        count += 1
+if __name__ == '__main__':
+    filled = defaultdict(int)
 
-print(count)
+    for string in strings:
+        x1, y1, x2, y2 = map(int, pattern.match(string).groups())
+
+        if x1 == x2 or y1 == y2:
+            fill_in_along_line(x1, y1, x2, y2, filled)
+
+    count = sum(1 for v in filled.values() if v >= 2)
+    print(count)
