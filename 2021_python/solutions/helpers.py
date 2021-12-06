@@ -46,11 +46,11 @@ def read_each_line_as_digit_sequence(filepath):
     return digit_lists
 
 
-def read_each_line_as_delimited_int_sequence(filepath, delimiter=None):
+def read_each_line_as_delimited_int_sequence(filepath, delimiter=None, dtype=int):
     integer_lists = []
     with open(filepath, 'r') as f:
         for line in f:
-            integer_lists.append(np.array(line.strip('\n').split(delimiter), dtype=int))
+            integer_lists.append(np.array(line.strip('\n').split(delimiter), dtype=dtype))
 
     return integer_lists
 
