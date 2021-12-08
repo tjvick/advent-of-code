@@ -3,8 +3,8 @@ from datetime import datetime
 import math
 import requests
 
-owner_id = "115313"
-# owner_id = "405974"
+# owner_id = "115313"
+owner_id = "405974"
 
 with open('session_id', 'r') as f:
     session_id = f.read()
