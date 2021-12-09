@@ -4,31 +4,18 @@ filename = 'input'
 
 strings = helpers.read_each_line_as_string(filename)
 
-mappings = {
-    2: 1,
-    4: 4,
-    3: 7,
-    7: 8
-}
+unique_segment_counts = [2, 3, 4, 7]
 
-uniques = mappings.keys()
-
-count = 0
+n_easy_digits = 0
 count_with_every_unique = 0
 for string in strings:
-    observed, output = string.split('|')
-    output_digits = output.strip().split(' ')
-    observed_digits = observed.strip().split(' ')
-    count += sum(len(digit) in mappings for digit in output_digits)
+    observed_digits, output_digits = (x.split() for x in string.split(' | '))
+    n_easy_digits += sum(len(digit) in unique_segment_counts for digit in output_digits)
 
-    unique_lengths = set(len(digit) for digit in observed_digits)
-    count_with_every_unique += all(x in unique_lengths for x in mappings.keys())
+    digit_lengths = map(len, observed_digits)
+    count_with_every_unique += set(unique_segment_counts).issubset(digit_lengths)
 
-print('answer:', count)
+
+print('answer:', n_easy_digits)
 
 print(count_with_every_unique == len(strings))
-
-
-
-
-
