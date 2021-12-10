@@ -10,7 +10,7 @@ strings = helpers.read_each_line_as_string(filename)
 def fill_in_along_line(x1, y1, x2, y2, filled):
     dx, dy = x2 - x1, y2 - y1
     length = max(abs(dx), abs(dy))
-    for step in range(0, length + 1, 1):
+    for step in range(0, length + 1):
         x = x1 + dx * step / length
         y = y1 + dy * step / length
         filled[(x, y)] += 1

@@ -1,5 +1,6 @@
 from solutions import helpers
 import numpy as np
+import re
 
 filename = 'input'
 

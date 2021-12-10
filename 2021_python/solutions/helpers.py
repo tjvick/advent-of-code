@@ -74,19 +74,18 @@ def find_local_minimum(f_x, x_0, x_min, x_max, step=1):
         bound = x_min
     else:
         print("No Variation at start!")
-        return x_0, y_0, 0
+        return x_0, y_0, -1
 
     prev = y_0
     while direction*x < direction*bound:
         count += 1
         x += direction*step
         if f_x(x) > prev:
-            print(count)
-            return x-direction*step, prev, 1
+            return x-direction*step, prev, 0
         prev = f_x(x)
 
     print("Boundary reached: ", bound)
-    return x_0, y_0, 0
+    return x_0, y_0, -1
 
 
 def find_local_minimum_fast(f_x, x_0, x_min, x_max, step_sizes=(10, 1)):

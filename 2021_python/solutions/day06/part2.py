@@ -17,13 +17,11 @@ for fish in start:
     cycle_tracker[fish]['ready'] += 1
 
 for day in range(n_days):
-    print('after day:', day+1)
     mod = day % 7
     birthing = cycle_tracker[mod]['ready']
     cycle_tracker[(day+2) % 7]['waiting'] += birthing
     cycle_tracker[mod]['ready'] += cycle_tracker[mod]['waiting']
     cycle_tracker[mod]['waiting'] = 0
-    print(cycle_tracker)
 
     n_fishes = sum(sum(v.values()) for v in cycle_tracker.values())
     print(n_fishes)
