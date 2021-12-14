@@ -33,5 +33,3 @@ points = {
 
 answer = sum(points[char] for char in illegals)
 print(answer)
-
-

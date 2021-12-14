@@ -41,4 +41,3 @@ for sequence in char_sequences:
         total_scores.append(total_score)
 
 print(np.median(total_scores))
-
