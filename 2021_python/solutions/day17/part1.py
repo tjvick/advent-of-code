@@ -1,67 +1,58 @@
-from collections import defaultdict
-
-from solutions import helpers
 import numpy as np
-import re
 
-# filename = 'input'
-# strings = helpers.read_each_line_as_string(filename)
-# ints = helpers.read_each_line_as_int(filename)
-# floats = helpers.read_each_line_as_float(filename)
-# char_sequences = helpers.read_each_line_as_char_sequence(filename)
-# digit_sequences = helpers.read_each_line_as_digit_sequence(filename)
-# int_sequences = helpers.read_each_line_as_delimited_int_sequence(filename)
-
-x_bounds = [20, 30]
-y_bounds = [-10, -5]
+# x_bounds = [20, 30]
+# y_bounds = [-10, -5]
 x_bounds = [211, 232]
 y_bounds = [-124, -69]
 
+v0x_min = int(np.floor((x_bounds[0]*2)**0.5))
+v0x_max = int(np.ceil((x_bounds[0]*2)**0.5))
+v0y_min = 1
+v0y_max = -y_bounds[0]
 
-def simulate(v_0):
-    # print("simulating with v0", v_0)
-    v = v_0.copy()
+
+def simulate(v0):
+    v = np.array(v0)
     p = np.array([0, 0])
-    max_height = 0
+    peak = 0
     while True:
         p += v
-        v[0] = v[0] - np.sign(v[0])
+        v[0] -= np.sign(v[0])
         v[1] -= 1
-        if p[1] > max_height:
-            max_height = p[1]
+        peak = max(peak, p[1])
 
         if x_bounds[0] <= p[0] <= x_bounds[1] and y_bounds[0] <= p[1] <= y_bounds[1]:
-            # print('LANDED! at', p)
-            # print(max_height)
-            return max_height
+            # landed
+            return peak
 
         if v[0] == 0 and p[0] < x_bounds[0]:
-            # print('stopped short')
+            # stopped short
             return -3
 
         if p[0] > x_bounds[1]:
-            # print("too far")
+            # too far
             return -1
 
         if p[1] < y_bounds[0]:
-            # print('too low')
+            # too low
             return -2
 
 
+if __name__ == "__main__":
+    # Analytical solution
+    max_peak = (v0y_max - 1) * v0y_max / 2
+    print(max_peak)
 
-max_height = 0
-for ix in range(x_bounds[1]):
-    for iy in range(400):
-        result = simulate(np.array([ix, iy]))
-        if result == -3:
-            break
-        if result > max_height:
-            max_height = result
+    # Bounded Numerical Solution
+    max_peak = 0
+    for v0y in range(0, v0y_max + 1):
+        valid_vx0 = []
+        for v0x in range(v0x_min, v0x_max + 1):
+            result = simulate([v0x, v0y])
+            if result >= 0:
+                valid_vx0.append(v0x)
+                max_peak = max(result, max_peak)
 
+    print(max_peak)
 
-print(max_height)
-
-# not 4950
-# 200: 7626
-# 300: 7626
 
