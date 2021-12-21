@@ -2,6 +2,8 @@ from solutions import helpers
 import numpy as np
 import re
 
+np.set_printoptions(edgeitems=30, linewidth=100000)
+
 filename = 'input'
 
 # strings = helpers.read_each_line_as_string(filename)
