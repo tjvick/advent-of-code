@@ -5,6 +5,7 @@ import re
 np.set_printoptions(edgeitems=30, linewidth=100000)
 
 filename = 'input'
+# filename = 'test'
 
 # strings = helpers.read_each_line_as_string(filename)
 # ints = helpers.read_each_line_as_int(filename)

@@ -1,14 +1,21 @@
 from solutions import helpers
 import numpy as np
-import re
 
 np.set_printoptions(edgeitems=30, linewidth=100000)
 
 filename = 'input'
 
-# strings = helpers.read_each_line_as_string(filename)
-# ints = helpers.read_each_line_as_int(filename)
-# floats = helpers.read_each_line_as_float(filename)
-# char_sequences = helpers.read_each_line_as_char_sequence(filename)
-# digit_sequences = helpers.read_each_line_as_digit_sequence(filename)
-# int_sequences = helpers.read_each_line_as_delimited_int_sequence(filename)
+strings = helpers.read_each_line_as_string(filename)
+
+all_cals = []
+cals = 0
+for s in strings:
+    if s == '':
+        all_cals.append(cals)
+        cals = 0
+    else:
+        cals += int(s)
+
+all_cals.append(cals)
+
+print(max(all_cals))
