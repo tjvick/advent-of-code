@@ -7,15 +7,15 @@ filename = 'input'
 
 strings = helpers.read_each_line_as_string(filename)
 
-all_cals = []
-cals = 0
+all_calorie_totals = []
+elf_calorie_total = 0
 for s in strings:
     if s == '':
-        all_cals.append(cals)
-        cals = 0
+        all_calorie_totals.append(elf_calorie_total)
+        elf_calorie_total = 0
     else:
-        cals += int(s)
+        elf_calorie_total += int(s)
 
-all_cals.append(cals)
+all_calorie_totals.append(elf_calorie_total)
 
-print(max(all_cals))
+print(max(all_calorie_totals))
