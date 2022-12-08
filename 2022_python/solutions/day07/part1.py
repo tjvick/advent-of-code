@@ -1,72 +1,28 @@
-from solutions import helpers
 import numpy as np
-import re
+
+from solutions.day07.file_system import FileType, FileSystemNode
+from solutions.day07.parse_shell_output import parse_shell_output
 
 np.set_printoptions(edgeitems=30, linewidth=100000)
 
 filename = 'input'
-# filename = 'test'
+# filename = 'test'`
 
-strings = helpers.read_each_line_as_string(filename)
-
-pos = []
-structure = {"/": {}}
-reading = False
+root_dir = parse_shell_output(filename)
 
 
-def navigate_structure(pos):
-    print(pos)
-    a = structure
-    for p in pos:
-        print(p)
-        a = a[p]
+def find_directory_sizes(file_system_node: FileSystemNode):
+    dir_sizes = []
 
-    return a
+    def collect_directory_sizes(child):
+        if child.type == FileType.DIRECTORY:
+            dir_sizes.append(child.size())
 
+    file_system_node.walk_and_execute(collect_directory_sizes)
 
-for string in strings:
-    print(string)
-
-    cd = re.match('\$ cd (.+)', string)
-    ls = re.match('\$ ls', string)
-    if cd:
-        newdir = cd.group(1)
-        if newdir == "..":
-            pos.pop()
-        else:
-            pos.append(newdir)
-        reading = False
-    elif ls:
-        reading = True
-    elif reading:
-        dir = re.match('dir (.+)', string)
-        if dir:
-            navigate_structure(pos)[dir.group(1)] = {}
-        else:
-            file = re.match('(\d+) (.+)', string)
-            filesize = file.group(1)
-            filename = file.group(2)
-            navigate_structure(pos)[filename] = filesize
+    return dir_sizes
 
 
-large_directories = []
-
-print(structure)
-
-
-def compute_dir_size(dir_dict):
-    total_size = 0
-    for key, val in dir_dict.items():
-        if type(val) == str:
-            total_size += int(val)
-        else:
-            total_size += compute_dir_size(val)
-
-    if total_size <= 100000:
-        large_directories.append(total_size)
-    return total_size
-
-
-compute_dir_size(structure)
-
-print(sum(large_directories))
+directory_sizes = find_directory_sizes(root_dir)
+small_directories = [size for size in directory_sizes if size <= 100000]
+print(sum(small_directories))
