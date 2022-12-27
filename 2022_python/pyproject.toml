@@ -12,6 +12,8 @@ numpy = "^1.23.5"
 scipy = "^1.9.3"
 python-dotenv = "^0.21.0"
 requests = "^2.28.1"
+networkx = "^2.8.8"
+matplotlib = "^3.6.2"
 
 
 [build-system]
