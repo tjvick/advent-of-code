@@ -10,7 +10,7 @@ load_dotenv()
 cookie = os.getenv('COOKIE')
 
 YEAR = 2023
-DAY_TO_DOWNLOAD = 1
+DAY_TO_DOWNLOAD = 2
 
 
 def wait_until_time(day: int):
