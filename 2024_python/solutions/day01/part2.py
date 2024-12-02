@@ -1,7 +1,6 @@
 from collections import Counter
 
 from solutions import helpers
-import numpy as np
 
 filepath = 'input'
 
