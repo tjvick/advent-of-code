@@ -19,3 +19,8 @@ def read_as_list_of_delimited_arrays(filepath, delimiter=None, dtype=int):
             integer_lists.append(np.array(line.strip('\n').split(delimiter), dtype=dtype))
 
     return integer_lists
+
+
+def read_each_line_as_string(filepath):
+    with open(filepath, 'r') as f:
+        return [line.strip('\n') for line in f]
