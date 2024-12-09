@@ -21,7 +21,7 @@ def read_as_list_of_delimited_arrays(filepath, delimiter=None, dtype=int):
     return integer_lists
 
 
-def read_as_2d_array_of_characters(filepath, dtype=str):
+def read_as_2d_array_of_characters(filepath, dtype=str) -> np.array:
     with open(filepath, 'r') as f:
         character_lists = [list(line.strip('\n')) for line in f]
 
