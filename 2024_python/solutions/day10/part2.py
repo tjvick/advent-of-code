@@ -1,0 +1,1 @@
+# Implementation for Part 1 actually gave the answer for Part 2 already
